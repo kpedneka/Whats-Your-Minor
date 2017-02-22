@@ -1,0 +1,30 @@
+{
+  "name": "WhatsYourMinor",
+  "version": "1.0.0",
+  "description": "Unified publishing platform for social media for CS-546 Fall 2016",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kichithewolf/CS546App.git"
+  },
+  "author": "Jay Rungta",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jayrungta/Whats-Your-Minor/issues"
+  },
+  "homepage": "https://github.com/jayrungta/Whats-Your-Minor#readme",
+  "dependencies": {
+    "mongo-xlsx": "^1.0.12",
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "express-handlebars": "^3.0.0",
+    "handlebars": "^4.0.5",
+    "mongodb": "^2.2.11",
+    "node-uuid": "^1.4.7",
+    "xss": "^0.3.2"
+  }
+}
