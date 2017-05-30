@@ -1,3 +1,5 @@
 
 node_modules/*
 example_content.txt
+printTranscript.pdf
+*.pdf
