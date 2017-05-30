@@ -81,49 +81,60 @@ router.post('/', function(req, res, next) {
 		mongoXlsx.xlsx2MongoData(file, model, function(err, mongoData) {
 			// console.log('Mongo data:', mongoData); 
 			mongoData.filter((entry) => {
-				if (entry.course_no != null){
+				if (entry.major != null){
 					
 					// try to find it, if it's not there then call add, save to db
-					courses.find({course_no: entry.course_no}, function (err, doc) {
-						if (err) return console.error(err);
-						// if doc is null, doc.length == 0
-						if (doc.length){
+					majors.findOne({major: entry.major}, function(err, found){
+						if (err) {
+							console.log(err);
+							return res.sendStatus(500);
+						}
+						// if major is not null, it already exists
+						if (found) {
+							// console.log('major already exists');
 							exists ++;
-						} else {
-							// create new courses object from mongoData entry
-							var newCourse =	new courses({ 
-									course_no: entry.course_no, 
-									course_name: entry.course_name, 
-									department: entry.department, 
-									major_requirement: entry.major_requirement, 
-									minor_requirement: entry.minor_requirement, 
-									upper: entry.upper, 
-									lower: entry.lower, 
-									major: entry.major 
-								});
-							newCourse.save(function (err, course) {
-								if (err) return console.error(err);
+							done();
+						}
+						else {
+							// create new major object from mongoData entry
+							var newMajor =	new majors({ 
+								major:  entry.major,
+								requirements: entry.requirements,
+								electives:   entry.electives,
+								upper: entry.upper,
+								lower: entry.lower,
+								total: entry.total 
+							});
+							newMajor.save(function(err, success){
+								if (err) {
+									console.log(err);
+									return res.sendStatus(500);
+								}
+								// console.log('saved new major');
 								inserted ++;
-							});	
+								insertedNew = true;
+								done();
+							});
 						}
 					});
 				}
-				// if course_no == null, skip it
+				// if major == null, skip it
 			});
-		});
+		});	
 	});
-	// logging is not working as expected. Damn asynchronous calls!!
-	// it is printing 0 exists and returning 304 before the filter function returns!
-	if(insertedNew){
-		// created
-		console.log('created %d new courses', inserted);
-		res.sendStatus(201);
-	} else {
-		// not modified
-		console.log('file contained %d exisiting courses', exists);
-		res.sendStatus(304);
+	function done(){
+		if (exists + inserted == mongoData.length){
+			if(insertedNew){
+				// created
+				console.log('created %d new majors', inserted);
+				return res.sendStatus(201);
+			} else {
+				// not modified at all
+				console.log('file contained %d existing majors', exists);
+				return res.sendStatus(304);
+			}
+		}
 	}
-	
 });
 
 module.exports = router;

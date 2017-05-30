@@ -45,43 +45,58 @@ router.post('/', function(req, res, next) {
 			if (entry.minor != null){
 				
 				// try to find it, if it's not there then call add, save to db
-				minors.find({minor: entry.minor}, function (err, doc) {
-					if (err) return console.error(err);
-					// if doc is null, doc.length == 0
-					if (doc.length){
+				minors.findOne({minor: entry.minor}, function(err, found){
+					if (err) {
+						console.log(err);
+						return res.sendStatus(500);
+					}
+					// if minor is not null, it already exists
+					if (found) {
+						// console.log('minor already exists');
 						exists ++;
-					} else {
+						done();
+					}
+					else {
 						// create new minor object from mongoData entry
 						var newMinor =	new minors({ 
-								minor:  entry.minor,
-								requirements: entry.requirements,
-								electives:   entry.electives,
-								upper: entry.upper,
-								lower: entry.lower,
-								total: entry.total 
-							});
-						newMinor.save(function (err, concentration) {
-							if (err) return console.error(err);
+							minor:  entry.minor,
+							requirements: entry.requirements,
+							electives:   entry.electives,
+							upper: entry.upper,
+							lower: entry.lower,
+							total: entry.total 
+						});
+						newMinor.save(function(err, success){
+							if (err) {
+								console.log(err);
+								return res.sendStatus(500);
+							}
+							// console.log('saved new minor');
 							inserted ++;
-						});	
+							insertedNew = true;
+							done();
+						});
 					}
+
 				});
 			}
 			// if minor == null, skip it
 		});
-
+		
+		function done(){
+			if (exists + inserted == mongoData.length){
+					if(insertedNew){
+						// created
+						console.log('created %d new minors', inserted);
+						return res.sendStatus(201);
+					} else {
+						// not modified at all
+						console.log('file contained %d existing minors', exists);
+						return res.sendStatus(304);
+					}
+			}
+		}
 	});
-	// logging is not working as expected. Damn asynchronous calls!!
-	// it is printing 0 exists and returning 304 before the filter function returns!
-	if(insertedNew){
-		// created
-		console.log('created %d new minors', inserted);
-		res.sendStatus(201);
-	} else {
-		// not modified
-		console.log('file contained %d existing minors', exists);
-		res.sendStatus(304);
-	}
 });
 
 module.exports = router;

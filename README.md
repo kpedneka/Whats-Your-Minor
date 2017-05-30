@@ -14,6 +14,35 @@ Clone this repository on your local machine
  App listens on port 3000
  [Go to localhost:3000/](http://localhost:3000/)
  
+ # Routes & methods
+ ---
+ ### Router: courses
+ | route | method | result |
+ |-------|--------|--------|
+ | /courses | GET | gets all courses from db|
+ | /courses | POST | adds new course from excel|
+ | /courses/:course_no | GET | gets all courses|
+ 
+ ### Router: majors
+ | route | method | result |
+ |-------|--------|--------|
+ | /majors | GET | gets all majors from db|
+ | /majors | POST | adds new course from excel|
+ 
+  ### Router: minors
+ | route | method | result |
+ |-------|--------|--------|
+ | /minors | GET | gets all minors from db|
+ | /minors | POST | adds new course from excel|
+ 
+ ### Router: users
+ | route | method | result |
+ |-------|--------|--------|
+ | /users | GET | gets all courses from db|
+ | /users/:username | GET | gets single user from db|
+ | /users | POST | adds new user |
+ | /users/:username | PUT | updates entry in db|
+
  # LICENSE
  ---
- MIT (see package.json)
+ MIT
