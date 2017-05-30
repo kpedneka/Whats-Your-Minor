@@ -36,7 +36,8 @@ router.get('/', function(req, res, next) {
 router.post('/', function(req, res, next) {
 	console.log('received a request for post');
 	var insertedNew = false;
-	
+	var exists = 0;
+	var inserted = 0;
 	/* Read Excel */
 	mongoXlsx.xlsx2MongoData(file, model, function(err, mongoData) {
 		// console.log('Mongo data:', mongoData); 
@@ -48,7 +49,7 @@ router.post('/', function(req, res, next) {
 					if (err) return console.error(err);
 					// if doc is null, doc.length == 0
 					if (doc.length){
-						console.log('exists already!');
+						exists++;
 					} else {
 						// create new majors object from mongoData entry
 						var newMajor =	new majors({ 
@@ -60,8 +61,8 @@ router.post('/', function(req, res, next) {
 								total: entry.total 
 							});
 						newMajor.save(function (err, concentration) {
-						if (err) return console.error(err);
-							console.log('successfully added '+ concentration.major);
+							if (err) return console.error(err);
+							inserted ++;
 						});	
 					}
 				});
@@ -69,13 +70,16 @@ router.post('/', function(req, res, next) {
 			// if major == null, skip it
 		});
 	});
-
+	// logging is not working as expected. Damn asynchronous calls!!
+	// it is printing 0 exists and returning 304 before the filter function returns!
 	if(insertedNew){
 		// created
-		res.send(201);
+		console.log('created %d new majors', inserted);
+		res.sendStatus(201);
 	} else {
 		// not modified
-		res.send(304);
+		console.log('file contained %d exisiting majors', exists);
+		res.sendStatus(304);
 	}
 	
 });

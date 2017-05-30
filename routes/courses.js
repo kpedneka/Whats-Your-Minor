@@ -72,6 +72,8 @@ router.get('/:course_no', function(req, res, next) {
 router.post('/', function(req, res, next) {
 	console.log('received a request for post');
 	var insertedNew = false;
+	var exists = Number(0);
+	var inserted = Number(0);
 	// get stuff from excel file and insert
 	files.forEach(function (file) {
 	
@@ -86,7 +88,7 @@ router.post('/', function(req, res, next) {
 						if (err) return console.error(err);
 						// if doc is null, doc.length == 0
 						if (doc.length){
-							console.log('exists already!');
+							exists ++;
 						} else {
 							// create new courses object from mongoData entry
 							var newCourse =	new courses({ 
@@ -100,8 +102,8 @@ router.post('/', function(req, res, next) {
 									major: entry.major 
 								});
 							newCourse.save(function (err, course) {
-							if (err) return console.error(err);
-								console.log('successfully added '+ course.course_no);
+								if (err) return console.error(err);
+								inserted ++;
 							});	
 						}
 					});
@@ -110,12 +112,16 @@ router.post('/', function(req, res, next) {
 			});
 		});
 	});
+	// logging is not working as expected. Damn asynchronous calls!!
+	// it is printing 0 exists and returning 304 before the filter function returns!
 	if(insertedNew){
 		// created
-		res.send(201);
+		console.log('created %d new courses', inserted);
+		res.sendStatus(201);
 	} else {
 		// not modified
-		res.send(304);
+		console.log('file contained %d exisiting courses', exists);
+		res.sendStatus(304);
 	}
 	
 });
