@@ -19,22 +19,10 @@ var model = mongoXlsx.buildDynamicModel(minors_model);
 
 var file = "./excel_files/minors.xlsx";
 
-/* GET all posts page. */
+
+/* GET fetches excel files and adds minors to db, then redirects to /all */
 router.get('/', function(req, res, next) {
-	console.log('received request for get');
-  	minors.find({}, function(err, minors) {
-    var minorsArray = {};
-
-    minors.forEach(function(minor) {
-      minorsArray[minor._id] = minor;
-    });
-
-    res.send(minorsArray);
-  });
-});
-
-router.post('/', function(req, res, next) {
-	console.log('received a request for post');
+	console.log('received a request for get /minors/');
 	var insertedNew = false;
 	var exists = 0;
 	var inserted = 0;
@@ -88,15 +76,30 @@ router.post('/', function(req, res, next) {
 					if(insertedNew){
 						// created
 						console.log('created %d new minors', inserted);
-						return res.sendStatus(201);
+						console.log('redirecting to /minors/all ...');
+						res.redirect(201, '/minors/all');
 					} else {
 						// not modified at all
 						console.log('file contained %d existing minors', exists);
-						return res.sendStatus(304);
+						console.log('redirecting to /minors/all ...');
+						res.redirect('/minors/all');
 					}
 			}
 		}
 	});
 });
 
+/* GET fetches all posts from the db and displays them. */
+router.get('/all', function(req, res, next) {
+	console.log('received request for get /minors/all');
+  	minors.find({}, function(err, minors) {
+    var minorsArray = {};
+    console.log('now sending minors from db...')
+    minors.forEach(function(minor) {
+      minorsArray[minor._id] = minor;
+    });
+
+    res.send(minorsArray);
+  });
+});
 module.exports = router;

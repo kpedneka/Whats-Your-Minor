@@ -19,21 +19,21 @@ Clone this repository on your local machine
  ### Router: courses
  | route | method | result |
  |-------|--------|--------|
- | /courses | GET | gets all courses from db|
- | /courses | POST | adds new course from excel|
- | /courses/:course_no | GET | gets all courses|
+ | /courses | GET | gets all courses from db, redirects to /courses/all |
+ | /courses/all | GET | gets all courses from db |
+ | /courses/:course_no | GET | gets single course by course_no |
  
  ### Router: majors
  | route | method | result |
  |-------|--------|--------|
- | /majors | GET | gets all majors from db|
- | /majors | POST | adds new course from excel|
+ | /majors/all | GET | gets all majors from db |
+ | /majors | GET | adds new course from excel, redirects to /minors/all |
  
   ### Router: minors
  | route | method | result |
  |-------|--------|--------|
- | /minors | GET | gets all minors from db|
- | /minors | POST | adds new course from excel|
+ | /minors/all | GET | gets all minors from db |
+ | /minors | GET | adds new course from excel, redirects to /minors/all |
  
  ### Router: users
  | route | method | result |

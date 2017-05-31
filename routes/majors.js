@@ -19,21 +19,8 @@ var model = mongoXlsx.buildDynamicModel(majors_model);
 
 var file = "./excel_files/majors.xlsx";
 
-/* GET all posts page. */
+/* GET fetches excel files and adds majors to db, then redirects to /all */
 router.get('/', function(req, res, next) {
-	console.log('received request for get');
-  	majors.find({}, function(err, majors) {
-    var majorsArray = {};
-
-    majors.forEach(function(major) {
-      majorsArray[major._id] = major;
-    });
-
-    res.send(majorsArray);
-  });
-});
-
-router.post('/', function(req, res, next) {
 	console.log('received a request for post');
 	var insertedNew = false;
 	var exists = 0;
@@ -87,15 +74,32 @@ router.post('/', function(req, res, next) {
 				if(insertedNew){
 					// created
 					console.log('created %d new majors', inserted);
-					return res.sendStatus(201);
+					console.log('about to redirect to /majors/all...');
+					res.redirect('/majors/all');
 				} else {
 					// not modified at all
 					console.log('file contained %d existing majors', exists);
-					return res.sendStatus(304);
+					console.log('about to redirect to /majors/all...');
+					res.redirect('/majors/all');
 				}
 			}
 		}
 	});
+});
+
+
+/* GET all posts page. */
+router.get('/all', function(req, res, next) {
+	console.log('received request for get /majors/all');
+  	majors.find({}, function(err, majors) {
+    var majorsArray = {};
+    console.log('now sending majors from db...')
+    majors.forEach(function(major) {
+      majorsArray[major._id] = major;
+    });
+
+    res.send(majorsArray);
+  });
 });
 
 module.exports = router;
