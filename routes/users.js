@@ -66,20 +66,16 @@ router.post('/login', function(req, res, next) {
 
 
 /* GET single user. */
-/* 
-	UNFINISHED: need to add a new strategy to determine authorization.
-	Right now, any user would be able to view another user's information.
- */
-router.get('/:username', passport.authenticate('jwt', {session: false}), function(req, res, next){
+router.get('/', passport.authenticate('jwt', {session: false}), function(req, res, next){
 	// validate data
 
-
-	userFuncs.findUser({username: req.params.username}, foundUser);
+	userFuncs.findUser({username: req.user.username}, foundUser);
 
 	function foundUser (err, user){
 		if (err) {
 			console.log('there was an error in findUser');
 		}
+		// double checking the user's attributes here, just to be safe
 		if (user.username === req.user.username) {
 			// if the user found is not null, send it
 			console.log('sending back this user\n'+user);
@@ -109,13 +105,5 @@ router.post('/', function(req, res, next) {
 	userFuncs.findUser(newUser, userFuncs.saveNew);
 });
 
-
-/* PUT users list. Updates a single user's majors and minors. INCOMPLETE */
-router.put('/:username', function(req, res, next){
-	// validate data req.body and maybe even req.params
-	
-	// to be implemented...
-	// userFuncs.updateUser()
-});
 
 module.exports = router;
