@@ -30,7 +30,7 @@ server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
 
-
+mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://localhost/wymriasim');
 
 var db = mongoose.connection;
@@ -99,3 +99,5 @@ function onListening() {
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
 }
+
+module.exports = server;

@@ -3,7 +3,7 @@ var Schema = mongoose.Schema;
 
 
 var majorSchema = new Schema({
-  major:  String,
+  _id:  String,
   requirements: Number,
   electives:   Number,
   upper: Number,

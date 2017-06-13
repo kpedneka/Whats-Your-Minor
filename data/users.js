@@ -19,8 +19,8 @@ exports.findAll = function (callback) {
 };
 
 exports.findUser = function (user, callback) {
-	console.log(user.username);
-	User.find({username: user.username}, function(err, users){
+	console.log(user._id);
+	User.find({_id: user._id}, function(err, users){
 		if (err){
 			console.log('error while looking up user');
 			callback(err, null);
@@ -48,19 +48,8 @@ exports.saveNew = function (err, user, newUser) {
 				console.log('there was an error in saving');
 				console.error(err);
 			}
-			console.log('successfully saved '+ newUser.username);
+			console.log('successfully saved '+ newUser._id);
 		})
 	}
-};
-
-exports.updateUser = function (user, callback) {
-	// this means that you can only update the majors and the minors
-	User.findOneAndUpdate({username: user.username}, {$set:{majors:user.majors, minors: user.minors}}, {new: true}, function(err, user){
-	    if(err){
-	        console.log('error while updating user');
-	        callback(err, null);
-	    }
-
-	    console.log('updated user\n'+user);
-	});
+	console.log('user already exists! Not saving');
 };
